@@ -651,7 +651,7 @@ textarea{
   position:absolute;
   z-index:6;
   top:var(--rav4-top);
-  left:0;
+  left:50%;
   width:var(--runner-width);
   max-width:260px;
   pointer-events:none;
@@ -678,14 +678,32 @@ textarea{
 }
 
 .rav4-runner.is-running{
-  animation:runnerPass 3.5s ease-in-out both;
+  animation:runnerPass 5.4s ease-in-out both;
 }
 
 @keyframes runnerPass{
-  0%{ transform:translateX(calc(100vw + 190px)); opacity:0; }
-  8%{ opacity:1; }
-  86%{ opacity:1; }
-  100%{ transform:translateX(calc(-1 * var(--runner-width) - 210px)); opacity:0; }
+  0%{
+    transform:translateX(calc(50vw + 220px));
+    opacity:0;
+  }
+  8%{
+    opacity:1;
+  }
+  38%{
+    transform:translateX(-50%);
+    opacity:1;
+  }
+  68%{
+    transform:translateX(-50%);
+    opacity:1;
+  }
+  92%{
+    opacity:1;
+  }
+  100%{
+    transform:translateX(calc(-50vw - var(--runner-width) - 220px));
+    opacity:0;
+  }
 }
 
 .all-cars-parade{
