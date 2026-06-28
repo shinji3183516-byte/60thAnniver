@@ -1245,15 +1245,46 @@ function updateSelectedByCenter() {
   }
 }
 
+function getOneSetWidth() {
+  const firstLoop0 = timelineTrack.querySelector(
+    '.year-node[data-loop="0"][data-index="0"]'
+  );
+  const firstLoop1 = timelineTrack.querySelector(
+    '.year-node[data-loop="1"][data-index="0"]'
+  );
+
+  if (!firstLoop0 || !firstLoop1) return 0;
+
+  /*
+    scrollWidth ÷ 3 では、カード間のgap分だけ微妙な誤差が出ます。
+    先頭カード同士の実際の距離を使うことで、
+    2026→1966の切替位置を完全に一致させます。
+  */
+  return firstLoop1.offsetLeft - firstLoop0.offsetLeft;
+}
+
 function keepEndlessLoop() {
-  const oneSetWidth = timelineTrack.scrollWidth / LOOP_COUNT;
+  const oneSetWidth = getOneSetWidth();
   if (!oneSetWidth) return;
 
-  if (offset <= -oneSetWidth * 2) {
-    offset += oneSetWidth;
-  }
+  const middleFirst = timelineTrack.querySelector(
+    '.year-node[data-loop="1"][data-index="0"]'
+  );
+  if (!middleFirst) return;
 
-  if (offset >= 0) {
+  /*
+    中央コピーの1966が画面中央に来るoffsetを基準にします。
+    右側コピーの1966まで進んだ瞬間に、
+    見た目が同じ中央コピーへ1セット分だけ戻します。
+    画面上のカード配置は変わらないため、切れ目は見えません。
+  */
+  const anchorOffset =
+    timelineFrame.clientWidth / 2 -
+    (middleFirst.offsetLeft + middleFirst.offsetWidth / 2);
+
+  if (offset <= anchorOffset - oneSetWidth) {
+    offset += oneSetWidth;
+  } else if (offset >= anchorOffset + oneSetWidth) {
     offset -= oneSetWidth;
   }
 }
@@ -1462,7 +1493,7 @@ function runRav4Once() {
   }
 
   // 少しだけ高さを変えて、毎回同じ位置に見えないようにします。
-  const laneTop = 34 + Math.floor(Math.random() * 18);
+  const laneTop = 20 + Math.floor(Math.random() * 8);
   runner.style.setProperty("--rav4-top", laneTop + "px");
 
   // 同じアニメーションを確実に再スタートさせます。
@@ -1570,11 +1601,14 @@ window.addEventListener("resize", function() {
 // 左上の余分なTOYOTA文字を出さないため、JSでロゴを追加しません。
 // restoreToyotaMark();
 buildTimeline();
-centerNode(0);
-createRav4Runner();
-updatePlayButtons();
-animate();
-scheduleRav4Run();
+
+requestAnimationFrame(function() {
+  centerNode(0);
+  createRav4Runner();
+  updatePlayButtons();
+  animate();
+  scheduleRav4Run();
+});
 
 
 /* ===== 追加：高級感のあるタイトル帯アニメーション ===== */

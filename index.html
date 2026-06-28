@@ -6,7 +6,7 @@
   <title>
    高岡工場 60th Anniversary Timeline
   </title>
-  <link href="style.css" rel="stylesheet"/>
+  <link href="style.css?v=20260628-nightlight2" rel="stylesheet"/>
   <script defer="" src="script.js">
   </script>
  </head>
@@ -94,6 +94,11 @@
    <div aria-label="歴代車走行ステージ" class="drive-stage drive-stage-full" id="driveStage">
     <div aria-hidden="true" class="drive-bg">
     </div>
+    <div aria-hidden="true" class="weather-effects">
+     <div class="weather-clouds"></div>
+     <div class="weather-rain"></div>
+     <div class="weather-night-lights"></div>
+    </div>
     <div aria-hidden="true" class="drive-cars" id="driveCars">
      <div class="drive-car-slot car-slot-1966">
       <img alt="" class="drive-car car-1966" src="images/run-cars/corolla-60th.png"/>
@@ -159,5 +164,23 @@
     </div>
    </section>
   </main>
+  <script>
+   (() => {
+    const stage = document.getElementById("driveStage");
+    if (!stage) return;
+
+    const weatherModes = ["sunny", "cloudy", "night"];
+    let weatherIndex = 0;
+
+    const applyWeather = () => {
+     stage.classList.remove(...weatherModes);
+     stage.classList.add(weatherModes[weatherIndex]);
+     weatherIndex = (weatherIndex + 1) % weatherModes.length;
+    };
+
+    applyWeather();
+    window.setInterval(applyWeather, 30000);
+   })();
+  </script>
  </body>
 </html>

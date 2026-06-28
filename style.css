@@ -393,7 +393,7 @@ h1 span{
 .big-year{
   color:#fff;
   font-size:clamp(38px, 6vw, 86px);
-  font-weight:800px;
+  font-weight:800;
   line-height:.88;
   letter-spacing:-.04em;
   text-shadow:0 0 18px rgba(255,255,255,.38), 0 0 34px rgba(218,178,78,.22);
@@ -903,7 +903,7 @@ textarea{
 
 .car-slot-1966{
   --slot-left:5%;
-  width:clamp(110px, 13vw, 170px);
+  width:clamp(105px, 10vw, 140px);
   opacity:1;
   transform:translateX(0);
   animation:driveFloat .48s ease-in-out infinite alternate;
@@ -912,12 +912,12 @@ textarea{
 .car-slot-1970{ --slot-left:18%; width:clamp(108px, 12.5vw, 165px); }
 .car-slot-1980{
   --slot-left:31%;
-  width:clamp(104px, 12vw, 158px);
+  width:clamp(108px, 13vw, 165px);
   /* 画像下側の透明余白を補正し、レビンのタイヤ位置を他車と合わせる */
   bottom:0;
 }
-.car-slot-1990{ --slot-left:44%; width:clamp(100px, 11.5vw, 150px); }
-.car-slot-2000{ --slot-left:57%; width:clamp(78px, 9vw, 116px); }
+.car-slot-1990{ --slot-left:44%; width:clamp(100px, 11.5vw, 145px);bottom:0; }
+.car-slot-2000{ --slot-left:57%; width:clamp(68px, 7.8vw, 100px); }
 .car-slot-2010{ --slot-left:68%; width:clamp(112px, 13vw, 174px); }
 .car-slot-2020{ --slot-left:81%; width:clamp(112px, 13vw, 178px); }
 
@@ -1576,3 +1576,413 @@ h1 span{
 .article-content{
   gap:6px;
 }
+
+/* =========================================================
+   v10: run-car背景に奥行き・立体感を追加
+   既存の背景移動と車のアニメーションは維持
+   ========================================================= */
+
+.drive-bg{
+  /* 遠景は少し明るく、下側へ向かって陰影を強くする */
+  background:
+    linear-gradient(
+      180deg,
+      rgba(120,190,235,.08) 0%,
+      rgba(255,255,255,0) 38%,
+      rgba(0,0,0,.08) 70%,
+      rgba(0,0,0,.30) 100%
+    ),
+    url("images/drive/old-to-modern-cityscape.jpg") repeat-x center 58% / auto 100%;
+
+  /* わずかに拡大し、平面的に見える余白を抑える */
+  transform-origin:center bottom;
+  filter:
+    saturate(1.04)
+    contrast(1.06)
+    brightness(.98);
+}
+
+/* 遠景の空気遠近法：上側に薄い霞を追加 */
+.drive-bg::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(205,232,248,.16) 0%,
+      rgba(205,232,248,.06) 42%,
+      rgba(255,255,255,0) 68%
+    );
+  z-index:1;
+}
+
+/* 手前側の陰影：建物の足元と車の接地感を強化 */
+.drive-bg::after{
+  content:"";
+  position:absolute;
+  left:0;
+  right:0;
+  bottom:0;
+  height:42%;
+  pointer-events:none;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(0,0,0,0) 0%,
+      rgba(0,0,0,.08) 42%,
+      rgba(0,0,0,.28) 100%
+    );
+  box-shadow:inset 0 -18px 28px rgba(0,0,0,.18);
+  z-index:2;
+}
+
+/* 背景の陰影より車を確実に前面へ表示 */
+.drive-cars{
+  z-index:5;
+}
+
+/* 車の下に柔らかい接地影を追加して浮遊感を抑える */
+.drive-car-slot::after{
+  content:"";
+  position:absolute;
+  left:14%;
+  right:12%;
+  bottom:-2px;
+  height:10px;
+  border-radius:50%;
+  background:rgba(0,0,0,.34);
+  filter:blur(5px);
+  transform:scaleX(.92);
+  z-index:-1;
+}
+
+/* =========================================================
+   v11: CSS崩れ修正版
+   後半の固定高さ指定と既存レスポンシブ指定の競合を解消
+   ========================================================= */
+
+.drive-bg{
+  overflow:hidden;
+}
+
+@media (max-width:1100px){
+  .header{
+    height:auto;
+    min-height:96px;
+    padding:8px 12px;
+    align-items:flex-start;
+  }
+
+  .header-actions{
+    width:100%;
+    justify-content:flex-start;
+    flex-wrap:wrap;
+  }
+
+  .main-card{
+    height:auto;
+    min-height:0;
+    grid-template-columns:1fr;
+  }
+
+  .left-panel,
+  .right-area{
+    height:auto;
+    min-height:0;
+    overflow:visible;
+  }
+
+  .photo-link{
+    height:300px;
+    min-height:300px;
+    flex:none;
+  }
+
+  .photo-link img{
+    min-height:0;
+  }
+
+  .event-grid{
+    height:auto;
+    grid-template-columns:1fr;
+    grid-template-rows:auto;
+  }
+
+  .event-grid article{
+    height:auto;
+    min-height:245px;
+    max-height:none;
+  }
+
+  .article-content{
+    height:auto;
+    max-height:none;
+    overflow:visible;
+  }
+}
+
+@media (max-width:640px){
+  .header{
+    min-height:0;
+  }
+
+  .header-uploader-menu{
+    left:0;
+    right:auto;
+    width:calc(100vw - 40px);
+  }
+
+  .photo-link{
+    height:250px;
+    min-height:250px;
+  }
+
+  .main-card{
+    gap:8px;
+  }
+
+  .event-grid{
+    gap:8px;
+  }
+}
+
+/* =========================================================
+   v12: 天候・昼夜変化
+   30秒ごとに切替、5秒かけて自然に変化
+   ========================================================= */
+
+.drive-stage{
+  background:#8fc7e8;
+}
+
+/* 天候レイヤー全体 */
+.weather-effects{
+  position:absolute;
+  inset:0;
+  z-index:3;
+  overflow:hidden;
+  pointer-events:none;
+  border-radius:inherit;
+}
+
+/* すべて5秒でゆっくり変化 */
+.drive-bg,
+.weather-effects,
+.weather-clouds,
+.weather-rain,
+.weather-night-lights,
+.drive-car{
+  transition:
+    filter 5s ease,
+    opacity 5s ease,
+    background 5s ease,
+    box-shadow 5s ease;
+}
+
+/* 雲 */
+.weather-clouds{
+  position:absolute;
+  inset:-20% -30%;
+  opacity:0;
+  background:
+    radial-gradient(ellipse at 15% 35%, rgba(235,240,245,.82) 0 10%, transparent 11%),
+    radial-gradient(ellipse at 30% 28%, rgba(215,222,230,.78) 0 13%, transparent 14%),
+    radial-gradient(ellipse at 48% 38%, rgba(225,230,236,.80) 0 12%, transparent 13%),
+    radial-gradient(ellipse at 70% 26%, rgba(205,212,220,.78) 0 14%, transparent 15%),
+    radial-gradient(ellipse at 88% 36%, rgba(225,230,236,.82) 0 11%, transparent 12%);
+  filter:blur(7px);
+  transform:translateX(-4%);
+  animation:weatherCloudMove 24s linear infinite;
+}
+
+@keyframes weatherCloudMove{
+  from{ transform:translateX(-8%); }
+  to{ transform:translateX(8%); }
+}
+
+/* 雨 */
+.weather-rain{
+  position:absolute;
+  inset:-35% -20%;
+  opacity:0;
+  background-image:
+    repeating-linear-gradient(
+      112deg,
+      transparent 0 13px,
+      rgba(210,230,245,.62) 14px 15px,
+      transparent 16px 27px
+    );
+  background-size:34px 34px;
+  animation:weatherRainFall .65s linear infinite;
+}
+
+@keyframes weatherRainFall{
+  from{ transform:translate3d(-20px,-35px,0); }
+  to{ transform:translate3d(20px,35px,0); }
+}
+
+/* 夜の街明かり
+   不自然な点状ライトは廃止し、薄い夜色だけを重ねる */
+.weather-night-lights{
+  position:absolute;
+  inset:0;
+  opacity:0;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(8,18,42,.08) 0%,
+      rgba(5,12,30,.18) 58%,
+      rgba(2,6,18,.32) 100%
+    );
+  mix-blend-mode:normal;
+  box-shadow:none;
+}
+
+/* 晴れ */
+.drive-stage.sunny .drive-bg{
+  filter:saturate(1.14) contrast(1.06) brightness(1.08);
+}
+
+.drive-stage.sunny .weather-clouds,
+.drive-stage.sunny .weather-rain,
+.drive-stage.sunny .weather-night-lights{
+  opacity:0;
+}
+
+/* 曇り */
+.drive-stage.cloudy .drive-bg{
+  filter:saturate(.72) contrast(.96) brightness(.82);
+}
+
+.drive-stage.cloudy .weather-clouds{
+  opacity:.72;
+}
+
+.drive-stage.cloudy .weather-rain,
+.drive-stage.cloudy .weather-night-lights{
+  opacity:0;
+}
+
+/* 雨 */
+.drive-stage.rainy .drive-bg{
+  filter:saturate(.58) contrast(.94) brightness(.67) hue-rotate(6deg);
+}
+
+.drive-stage.rainy .weather-clouds{
+  opacity:.88;
+}
+
+.drive-stage.rainy .weather-rain{
+  opacity:.80;
+}
+
+.drive-stage.rainy .weather-night-lights{
+  opacity:0;
+}
+
+/* 夜 */
+.drive-stage.night .drive-bg{
+  filter:saturate(.62) contrast(1.08) brightness(.38) hue-rotate(12deg);
+}
+
+.drive-stage.night .weather-clouds{
+  opacity:.22;
+}
+
+.drive-stage.night .weather-rain{
+  opacity:0;
+}
+
+.drive-stage.night .weather-night-lights{
+  opacity:.42;
+}
+
+/* 夜間は車体全体を発光させず、少し暗くするだけ */
+.drive-stage.night .drive-car{
+  filter:
+    brightness(.72)
+    drop-shadow(0 14px 14px rgba(0,0,0,.72));
+}
+
+/* 左向きの車の前方に、ヘッドライト風の光を追加 */
+.drive-car-slot::before{
+  content:"";
+  position:absolute;
+  left:-42%;
+  bottom:18%;
+  width:58%;
+  height:28%;
+  pointer-events:none;
+  opacity:0;
+  z-index:-1;
+  transform:skewX(-10deg);
+  transform-origin:right center;
+  background:
+    linear-gradient(
+      90deg,
+      rgba(255,248,205,0) 0%,
+      rgba(255,244,185,.12) 42%,
+      rgba(255,241,165,.42) 78%,
+      rgba(255,250,220,.88) 100%
+    );
+  clip-path:polygon(0 18%, 100% 40%, 100% 60%, 0 82%);
+  filter:blur(3px);
+  transition:opacity 5s ease;
+}
+
+/* 夜だけヘッドライトを点灯 */
+.drive-stage.night .drive-car-slot::before{
+  opacity:.88;
+}
+
+/* 各車でライト位置を微調整 */
+.car-slot-1966::before{ bottom:20%; left:-39%; width:54%; }
+.car-slot-1970::before{ bottom:21%; left:-40%; width:55%; }
+.car-slot-1980::before{ bottom:26%; left:-38%; width:53%; }
+.car-slot-1990::before{ bottom:23%; left:-40%; width:55%; }
+.car-slot-2000::before{ bottom:28%; left:-38%; width:54%; }
+.car-slot-2010::before{ bottom:24%; left:-41%; width:56%; }
+.car-slot-2020::before{ bottom:25%; left:-42%; width:57%; }
+
+/* 雨天時の路面反射 */
+.drive-stage.rainy::after,
+.drive-stage.night::after{
+  content:"";
+  position:absolute;
+  left:0;
+  right:0;
+  bottom:0;
+  height:34%;
+  z-index:4;
+  pointer-events:none;
+  opacity:.55;
+  background:
+    linear-gradient(
+      180deg,
+      transparent,
+      rgba(120,170,210,.14) 45%,
+      rgba(255,220,130,.12) 100%
+    );
+  filter:blur(2px);
+  transition:opacity 5s ease;
+}
+
+
+/* =========================================================
+   v13: 雨演出を停止
+   ========================================================= */
+.weather-rain{
+  display:none !important;
+}
+
+.drive-stage.rainy .weather-rain{
+  opacity:0 !important;
+}
+
+.drive-stage.rainy::after{
+  display:none !important;
+}
+
+/* v14: 街の人工的な点灯表現を削除し、自然な夜色へ調整 */
