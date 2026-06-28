@@ -651,7 +651,7 @@ textarea{
   position:absolute;
   z-index:6;
   top:var(--rav4-top);
-  left:50%;
+  left:0;
   width:var(--runner-width);
   max-width:260px;
   pointer-events:none;
@@ -678,32 +678,16 @@ textarea{
 }
 
 .rav4-runner.is-running{
-  animation:runnerPass 5.4s ease-in-out both;
+  animation:runnerPass 4s ease-in-out both;
 }
 
 @keyframes runnerPass{
-  0%{
-    transform:translateX(calc(50vw + 220px));
-    opacity:0;
-  }
-  8%{
-    opacity:1;
-  }
-  38%{
-    transform:translateX(-50%);
-    opacity:1;
-  }
-  68%{
-    transform:translateX(-50%);
-    opacity:1;
-  }
-  92%{
-    opacity:1;
-  }
-  100%{
-    transform:translateX(calc(-50vw - var(--runner-width) - 220px));
-    opacity:0;
-  }
+  0%{ transform:translateX(calc(100vw + 190px)); opacity:0; }
+  8%{ opacity:1; }
+  43%{ transform:translateX(calc(50vw - 50%)); opacity:1; }
+  55.5%{ transform:translateX(calc(50vw - 50%)); opacity:1; }
+  88%{ opacity:1; }
+  100%{ transform:translateX(calc(-1 * var(--runner-width) - 210px)); opacity:0; }
 }
 
 .all-cars-parade{
@@ -721,7 +705,7 @@ textarea{
   width:var(--parade-width);
   opacity:0;
   transform:translateX(calc(100vw + 260px));
-  animation:paradePass 4.1s ease-in-out var(--parade-delay) both;
+  animation:paradePass 4.5s ease-in-out var(--parade-delay) both;
 }
 
 .all-cars-parade__car img{
@@ -733,7 +717,9 @@ textarea{
 @keyframes paradePass{
   0%{ transform:translateX(calc(100vw + 260px)); opacity:0; }
   9%{ opacity:1; }
-  84%{ opacity:1; }
+  42%{ transform:translateX(calc(50vw - 50%)); opacity:1; }
+  53.1%{ transform:translateX(calc(50vw - 50%)); opacity:1; }
+  86%{ opacity:1; }
   100%{ transform:translateX(-420px); opacity:0; }
 }
 
@@ -901,6 +887,7 @@ textarea{
 .drive-car-slot{
   position:absolute;
   bottom:13px;
+  left:var(--slot-left);
   opacity:0;
   transform:translateX(230px);
 }
@@ -915,19 +902,24 @@ textarea{
 }
 
 .car-slot-1966{
-  left:5%;
+  --slot-left:5%;
   width:clamp(110px, 13vw, 170px);
   opacity:1;
   transform:translateX(0);
   animation:driveFloat .48s ease-in-out infinite alternate;
 }
 
-.car-slot-1970{ left:18%; width:clamp(108px, 12.5vw, 165px); }
-.car-slot-1980{ left:31%; width:clamp(104px, 12vw, 158px); }
-.car-slot-1990{ left:44%; width:clamp(100px, 11.5vw, 150px); }
-.car-slot-2000{ left:57%; width:clamp(78px, 9vw, 116px); }
-.car-slot-2010{ left:68%; width:clamp(112px, 13vw, 174px); }
-.car-slot-2020{ left:81%; width:clamp(112px, 13vw, 178px); }
+.car-slot-1970{ --slot-left:18%; width:clamp(108px, 12.5vw, 165px); }
+.car-slot-1980{
+  --slot-left:31%;
+  width:clamp(104px, 12vw, 158px);
+  /* 画像下側の透明余白を補正し、レビンのタイヤ位置を他車と合わせる */
+  bottom:0;
+}
+.car-slot-1990{ --slot-left:44%; width:clamp(100px, 11.5vw, 150px); }
+.car-slot-2000{ --slot-left:57%; width:clamp(78px, 9vw, 116px); }
+.car-slot-2010{ --slot-left:68%; width:clamp(112px, 13vw, 174px); }
+.car-slot-2020{ --slot-left:81%; width:clamp(112px, 13vw, 178px); }
 
 .drive-stage.show-1970 .car-slot-1970,
 .drive-stage.show-1980 .car-slot-1980,
@@ -938,14 +930,35 @@ textarea{
   opacity:1;
   transform:translateX(0);
   animation:
-    driveJoin .95s ease-out both,
-    driveFloat .48s ease-in-out .95s infinite alternate;
+    driveJoinWithCenterStop 3.1s ease-in-out both,
+    driveFloat .48s ease-in-out 3.1s infinite alternate;
 }
 
-@keyframes driveJoin{
-  0%{ opacity:0; transform:translateX(230px); }
-  15%{ opacity:1; }
-  100%{ opacity:1; transform:translateX(0); }
+/* 右から走り込み、中央で約0.5秒停止してから所定位置へ移動 */
+@keyframes driveJoinWithCenterStop{
+  0%{
+    left:calc(100% + 40px);
+    opacity:0;
+    transform:translateX(0);
+  }
+  10%{
+    opacity:1;
+  }
+  42%{
+    left:50%;
+    opacity:1;
+    transform:translateX(-50%);
+  }
+  58%{
+    left:50%;
+    opacity:1;
+    transform:translateX(-50%);
+  }
+  100%{
+    left:var(--slot-left);
+    opacity:1;
+    transform:translateX(0);
+  }
 }
 
 @keyframes driveFloat{
@@ -958,11 +971,608 @@ textarea{
     height:150px;
     min-height:150px;
   }
-  .car-slot-1966{ left:3%; }
-  .car-slot-1970{ left:18%; }
-  .car-slot-1980{ left:33%; }
-  .car-slot-1990{ left:48%; }
-  .car-slot-2000{ left:61%; }
-  .car-slot-2010{ left:72%; }
-  .car-slot-2020{ left:82%; }
+  .car-slot-1966{ --slot-left:3%; }
+  .car-slot-1970{ --slot-left:18%; }
+  .car-slot-1980{ --slot-left:33%; }
+  .car-slot-1990{ --slot-left:48%; }
+  .car-slot-2000{ --slot-left:61%; }
+  .car-slot-2010{ --slot-left:72%; }
+  .car-slot-2020{ --slot-left:82%; }
+}
+
+
+/* run-carを年表と同じ横幅の独立コンテナにする */
+.drive-stage-full{
+  width:100%;
+  margin-bottom:18px;
+}
+
+
+/* =========================================================
+   2026 → 1966 周回演出
+   run-car内の全車が一斉退出し、初代カローラが先頭へ戻る
+   ========================================================= */
+.drive-stage.is-loop-reset .drive-car-slot{
+  opacity:1 !important;
+  animation:driveFleetExit 2.4s cubic-bezier(.32,.02,.58,1) both !important;
+}
+
+.drive-stage.is-loop-reset .car-slot-1966{
+  animation:
+    driveFleetExit 2.4s cubic-bezier(.32,.02,.58,1) both,
+    corollaReturnToLead 3.2s cubic-bezier(.18,.72,.24,1) 2.65s both,
+    driveFloat .48s ease-in-out 5.85s infinite alternate !important;
+}
+
+/* 現在の隊列位置から、全車が左側へ一斉に走り抜けます */
+@keyframes driveFleetExit{
+  0%{
+    left:var(--slot-left);
+    opacity:1;
+    transform:translateX(0);
+  }
+  18%{
+    left:calc(var(--slot-left) - 2%);
+    opacity:1;
+    transform:translateX(-8px);
+  }
+  72%{
+    opacity:1;
+  }
+  100%{
+    left:-28%;
+    opacity:0;
+    transform:translateX(-180px);
+  }
+}
+
+/* 初代カローラが右側から走り、先頭位置で停止します */
+@keyframes corollaReturnToLead{
+  0%{
+    left:calc(100% + 80px);
+    opacity:0;
+    transform:translateX(0);
+  }
+  10%{
+    opacity:1;
+  }
+  62%{
+    left:12%;
+    opacity:1;
+    transform:translateX(0);
+  }
+  82%{
+    left:5.7%;
+    opacity:1;
+    transform:translateX(0);
+  }
+  92%{
+    left:4.8%;
+    opacity:1;
+    transform:translateX(0);
+  }
+  100%{
+    left:5%;
+    opacity:1;
+    transform:translateX(0);
+  }
+}
+
+@media (max-width:900px){
+  @keyframes corollaReturnToLead{
+    0%{ left:calc(100% + 60px); opacity:0; transform:translateX(0); }
+    10%{ opacity:1; }
+    62%{ left:10%; opacity:1; transform:translateX(0); }
+    82%{ left:3.7%; opacity:1; transform:translateX(0); }
+    92%{ left:2.8%; opacity:1; transform:translateX(0); }
+    100%{ left:3%; opacity:1; transform:translateX(0); }
+  }
+}
+
+/* =========================================================
+   大型モニター常設表示：縦方向コンパクト調整
+   年表の説明欄を非表示にし、下段3コンテナを低くする
+   ========================================================= */
+
+/* 年表：178px → 140px */
+.timeline-frame{
+  height:140px;
+  margin-bottom:12px;
+}
+
+/* マウス操作説明は常設モニターでは不要 */
+.pause-note{
+  display:none;
+}
+
+/* 説明欄を消した分、年表カードを縦中央へ寄せる */
+.track-mask{
+  inset:14px 18px 14px;
+}
+
+.center-line{
+  top:8px;
+  bottom:8px;
+}
+
+/* 下段3コンテナ：360px → 245px */
+.event-grid article{
+  min-height:245px;
+  max-height:245px;
+  padding:10px 12px;
+  overflow:hidden;
+}
+
+.event-grid{
+  gap:10px;
+}
+
+.article-content{
+  gap:8px;
+  max-height:205px;
+  overflow:hidden;
+}
+
+.content-text{
+  font-size:clamp(12px, .82vw, 14px);
+  line-height:1.5;
+}
+
+.image-block{
+  max-height:150px;
+}
+
+.info-photo{
+  max-height:150px;
+  object-fit:contain;
+}
+
+/* =========================================================
+   大型モニター調整 v2
+   左メインの年号・タイトルを縮小し、左右の下端を揃える
+   ========================================================= */
+
+.main-card{
+  align-items:stretch;
+}
+
+.left-panel{
+  display:flex;
+  flex-direction:column;
+  height:auto;
+  min-height:0;
+  padding:14px 16px;
+}
+
+.label{
+  margin-bottom:4px;
+  font-size:11px;
+}
+
+.year-line{
+  gap:9px;
+  margin-bottom:4px;
+}
+
+.big-year{
+  font-size:clamp(40px, 4.5vw, 64px);
+  line-height:.9;
+}
+
+.era-badge{
+  min-height:26px;
+  padding:3px 9px;
+  font-size:12px;
+}
+
+#selectedTitle{
+  margin:4px 0 10px;
+  font-size:clamp(18px, 1.65vw, 27px);
+  line-height:1.12;
+}
+
+/* 左の写真枠が残りの高さだけを使い、右側と下端を揃える */
+.photo-link{
+  flex:1 1 auto;
+  min-height:0;
+  height:auto;
+  border-radius:16px;
+}
+
+.photo-link img{
+  width:100%;
+  height:100%;
+  min-height:0;
+  object-fit:contain;
+}
+
+.right-area{
+  min-height:0;
+}
+
+.event-grid{
+  align-items:stretch;
+}
+
+.event-grid article{
+  height:245px;
+  min-height:245px;
+  max-height:245px;
+}
+
+/* =========================================================
+   大型モニター調整 v3
+   左コンテナと右側3コンテナの下端を完全に揃える
+   ========================================================= */
+
+/* 左右の列を同じ高さにする */
+.main-card{
+  align-items:stretch;
+}
+
+.left-panel,
+.right-area{
+  height:100%;
+  min-height:0;
+}
+
+/* 右側は上部の追加欄を除いた残りを3コンテナで埋める */
+.right-area{
+  display:flex;
+  flex-direction:column;
+}
+
+.event-grid{
+  flex:1 1 0;
+  min-height:0;
+  align-items:stretch;
+}
+
+/* 固定245pxを解除し、左側コンテナの下端まで自動拡張 */
+.event-grid article{
+  height:100%;
+  min-height:0;
+  max-height:none;
+  overflow:hidden;
+}
+
+.article-content{
+  height:100%;
+  max-height:none;
+  min-height:0;
+  overflow:hidden;
+}
+
+/* =========================================================
+   大型モニター調整 v4
+   画像サイズに左右されず、左右コンテナの高さを固定
+   小さい画像は写真枠内に余白を残して最大表示
+   ========================================================= */
+
+:root{
+  --main-display-height:clamp(360px, 39vh, 420px);
+}
+
+/* メイン表示領域の高さを先に確定する */
+.main-card{
+  height:var(--main-display-height);
+  min-height:0;
+  align-items:stretch;
+}
+
+/* 左右の外側コンテナは同じ高さを維持 */
+.left-panel,
+.right-area{
+  height:100%;
+  min-height:0;
+  overflow:hidden;
+}
+
+/* 左側は見出し以外の残り全部を写真枠にする */
+.left-panel{
+  display:flex;
+  flex-direction:column;
+}
+
+.photo-link{
+  flex:1 1 0;
+  width:100%;
+  height:0;
+  min-height:0;
+  overflow:hidden;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:#020202;
+}
+
+/* 写真自体は枠いっぱいまで拡大。ただし切り取らない */
+.photo-link img{
+  display:block;
+  width:100%;
+  height:100%;
+  min-height:0;
+  max-width:100%;
+  max-height:100%;
+  object-fit:contain;
+  object-position:center;
+}
+
+/* 右側も決められた高さの中だけで構成する */
+.right-area{
+  display:flex;
+  flex-direction:column;
+}
+
+.editor-panel{
+  flex:0 0 auto;
+}
+
+.event-grid{
+  flex:1 1 0;
+  min-height:0;
+  grid-template-rows:minmax(0, 1fr);
+  align-items:stretch;
+}
+
+.event-grid article{
+  height:100%;
+  min-height:0;
+  max-height:none;
+  overflow:hidden;
+}
+
+.article-content{
+  height:100%;
+  min-height:0;
+  overflow:hidden;
+}
+
+/* =========================================================
+   大型モニター調整 v5
+   下段の余白を少し減らす
+   ========================================================= */
+:root{
+  --main-display-height:clamp(335px, 36vh, 390px);
+}
+
+/* 下段コンテナ内部の上下余白もわずかに縮小 */
+.left-panel{
+  padding:16px;
+}
+
+.event-grid article{
+  padding:12px;
+}
+
+.article-content{
+  gap:9px;
+}
+
+/* ページ最下部の余白を縮小 */
+.page{
+  padding-bottom:14px;
+}
+
+
+/* =========================================================
+   v6: アップローダーをヘッダーへ移動
+   右側3コンテナの表示領域を最大化
+   ========================================================= */
+.header{
+  overflow:visible;
+  position:relative;
+  z-index:20;
+}
+
+.header-actions{
+  position:relative;
+  flex-wrap:nowrap;
+}
+
+.header-uploader{
+  position:relative;
+  flex:0 0 auto;
+  z-index:30;
+}
+
+.header-uploader > summary{
+  list-style:none;
+  min-height:36px;
+  padding:8px 14px;
+  border:1px solid rgba(255,255,255,.22);
+  border-radius:999px;
+  color:#fff;
+  background:linear-gradient(180deg, rgba(35,35,35,.94), rgba(0,0,0,.9));
+  box-shadow:inset 0 0 16px rgba(255,255,255,.04), 0 8px 20px rgba(0,0,0,.35);
+  cursor:pointer;
+  white-space:nowrap;
+}
+
+.header-uploader > summary::-webkit-details-marker{
+  display:none;
+}
+
+.header-uploader[open] > summary{
+  border-color:rgba(247,216,121,.72);
+  box-shadow:0 0 18px rgba(218,178,78,.28), inset 0 0 14px rgba(218,178,78,.12);
+}
+
+.header-uploader-menu{
+  position:absolute;
+  top:calc(100% + 12px);
+  left:0;
+  width:min(620px, calc(100vw - 48px));
+  padding:14px;
+  border:1px solid rgba(247,216,121,.4);
+  border-radius:18px;
+  background:rgba(3,3,3,.98);
+  box-shadow:0 24px 60px rgba(0,0,0,.78), inset 0 0 24px rgba(218,178,78,.06);
+}
+
+.header-uploader-topline{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:14px;
+  margin-bottom:12px;
+}
+
+.header-uploader-topline small{
+  color:rgba(255,255,255,.68);
+}
+
+.header-uploader .editor-grid{
+  padding:0;
+}
+
+.header-uploader .editor-note{
+  padding:10px 0 0;
+}
+
+/* 旧アップローダー分の高さを完全に削除 */
+.right-area{
+  gap:0;
+}
+
+.right-area > .editor-panel{
+  display:none !important;
+}
+
+.event-grid{
+  flex:1 1 100%;
+  height:100%;
+}
+
+@media (max-width:1100px){
+  .header-actions{
+    flex-wrap:wrap;
+  }
+
+  .header-uploader-menu{
+    left:auto;
+    right:0;
+  }
+}
+
+/* =========================================================
+   v7: 下段コンテナ外側の余白を縮小
+   コンテナ内部と表示高さは維持
+   ========================================================= */
+
+/* run-carエリアと下段表示の間隔 */
+.drive-stage-full{
+  margin-bottom:10px;
+}
+
+/* 左メインと右3コンテナ群の間隔 */
+.main-card{
+  gap:10px;
+}
+
+/* 右側3コンテナ同士の間隔 */
+.event-grid{
+  gap:9px;
+}
+
+/* 画面最下部の余白 */
+.page{
+  padding-bottom:6px;
+}
+
+/* =========================================================
+   v8: run-carエリアを低くし、下段表示領域を拡大
+   ========================================================= */
+
+/* run-carの空の余白を減らす */
+.drive-stage,
+.drive-stage-full{
+  height:145px;
+  min-height:145px;
+}
+
+/* 背景の見える位置を少し下げ、道路と車を残す */
+.drive-bg{
+  background-position:center 58%;
+}
+
+/* 車は従来の接地位置を維持 */
+.drive-car-slot{
+  bottom:8px;
+}
+
+.car-slot-1980{
+  bottom:0;
+}
+
+/* run-carで減らした高さを下段へ移す */
+:root{
+  --main-display-height:clamp(370px, 40vh, 430px);
+}
+
+@media (max-width:900px){
+  .drive-stage,
+  .drive-stage-full{
+    height:130px;
+    min-height:130px;
+  }
+}
+
+/* =========================================================
+   v9: ヘッダーを右ロゴの高さに合わせ、下段外側余白を最小化
+   ========================================================= */
+
+/* 右端ロゴとほぼ同じ高さのコンパクトなヘッダー */
+.header{
+  height:96px;
+  min-height:96px;
+  padding:2px 12px;
+  margin-bottom:6px;
+  align-items:center;
+}
+
+.archive-logo{
+  width:88px;
+  height:88px;
+  flex:0 0 88px;
+}
+
+/* タイトルがヘッダー内に確実に収まるよう微調整 */
+h1{
+  font-size:clamp(22px, 2.75vw, 42px);
+  line-height:.98;
+}
+
+h1 span{
+  margin-bottom:2px;
+}
+
+/* 下段コンテナ外側の余白を限界近くまで縮小 */
+.drive-stage-full{
+  margin-bottom:4px;
+}
+
+.main-card{
+  gap:5px;
+}
+
+.event-grid{
+  gap:5px;
+}
+
+.page{
+  padding-bottom:0;
+}
+
+/* コンテナ内部の外周余白も少しだけ詰める */
+.left-panel{
+  padding:12px;
+}
+
+.event-grid article{
+  padding:9px;
+}
+
+.article-content{
+  gap:6px;
 }
