@@ -1493,7 +1493,7 @@ function runRav4Once() {
   }
 
   // 少しだけ高さを変えて、毎回同じ位置に見えないようにします。
-  const laneTop = 20 + Math.floor(Math.random() * 8);
+  const laneTop = 20 + Math.floor(Math.random() * 4);
   runner.style.setProperty("--rav4-top", laneTop + "px");
 
   // 同じアニメーションを確実に再スタートさせます。
