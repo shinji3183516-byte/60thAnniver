@@ -40,49 +40,56 @@ const ERA_RUNNER_CARS = [
     to: 1969,
     src: "images/run-cars/corolla-60th.png",
     alt: "Corolla 60th",
-    width: "clamp(210px, 20vw, 340px)"
+    width: "clamp(210px, 20vw, 340px)",
+    top: "22px"
   },
   {
     from: 1970,
     to: 1979,
     src: "images/run-cars/corolla-green.png",
     alt: "Classic Corolla",
-    width: "clamp(210px, 20vw, 340px)"
+    width: "clamp(210px, 20vw, 340px)",
+    top: "24px"
   },
   {
     from: 1980,
     to: 1989,
     src: "images/run-cars/levin.png",
     alt: "Levin",
-    width: "clamp(210px, 20vw, 340px)"
+    width: "clamp(210px, 20vw, 340px)",
+    top: "28px"
   },
   {
     from: 1990,
     to: 1999,
     src: "images/run-cars/prius.png",
     alt: "Prius",
-    width: "clamp(210px, 20vw, 340px)"
+    width: "clamp(210px, 20vw, 340px)",
+    top: "26px"
   },
   {
     from: 2000,
     to: 2009,
     src: "images/run-cars/iQ.png",
     alt: "iQ",
-    width: "clamp(150px, 15vw, 260px)"
+    width: "clamp(90px, 8.5vw, 145px)",
+    top: "34px"
   },
   {
     from: 2010,
     to: 2019,
     src: "images/run-cars/hayy.png",
     alt: "Harrier 60th",
-    width: "clamp(200px, 19vw, 330px)"
+    width: "clamp(190px, 17vw, 290px)",
+    top: "24px"
   },
   {
     from: 2020,
     to: 2026,
     src: "images/run-cars/rav4-silver.png",
     alt: "RAV4 Silver",
-    width: "clamp(200px, 19vw, 330px)"
+    width: "clamp(190px, 17vw, 290px)",
+    top: "24px"
   }
 ];
 
@@ -1467,6 +1474,10 @@ function createRav4Runner() {
     runner.style.setProperty("--runner-width", initialCar.width);
   }
 
+  if (initialCar && initialCar.top) {
+    runner.style.setProperty("--rav4-top", initialCar.top);
+  }
+
   runner.appendChild(light);
   runner.appendChild(car);
   timelineFrame.appendChild(runner);
@@ -1490,11 +1501,10 @@ function runRav4Once() {
     if (selectedCar.width) {
       runner.style.setProperty("--runner-width", selectedCar.width);
     }
-  }
 
-  // 少しだけ高さを変えて、毎回同じ位置に見えないようにします。
-  const laneTop = 20 + Math.floor(Math.random() * 4);
-  runner.style.setProperty("--rav4-top", laneTop + "px");
+    // 車画像ごとの透明余白・トリミング差を補正し、毎回同じ高さを走らせます。
+    runner.style.setProperty("--rav4-top", selectedCar.top || "24px");
+  }
 
   // 同じアニメーションを確実に再スタートさせます。
   runner.classList.remove("is-running");
