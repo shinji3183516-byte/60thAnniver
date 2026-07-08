@@ -21,6 +21,8 @@
   --shadow:0 18px 46px rgba(0,0,0,.62);
   --runner-width:clamp(160px, 15vw, 260px);
   --rav4-top:24px;
+  /* ヘッドライトだけの高さ。JS側の lightTop で車種ごとに上書きします。 */
+  --runner-light-top:48%;
 }
 
 *{
@@ -665,9 +667,12 @@ textarea{
   filter:drop-shadow(0 18px 18px rgba(0,0,0,.55));
 }
 
+/* ヘッドライトの光。
+   topは固定値ではなく、--runner-light-top を使います。
+   JSの ERA_RUNNER_CARS にある lightTop を変えると、ライトだけ上下します。 */
 .rav4-speed-light{
   position:absolute;
-  top:48%;
+  top:var(--runner-light-top, 48%);
   right:68%;
   width:150px;
   height:14px;
@@ -3444,4 +3449,31 @@ h1 span{
     driveFleetExit 2.4s cubic-bezier(.32,.02,.58,1) both,
     corollaReturnToLead 3.2s cubic-bezier(.18,.72,.24,1) 2.65s both,
     driveFloat .62s ease-in-out 5.85s infinite alternate !important;
+}
+
+/* =========================================================
+   v4: drive-stage隊列用ライト高さの個別調整
+   ---------------------------------------------------------
+   注意:
+   ERA_RUNNER_CARS の lightTop は、年表上を走り抜ける
+   .rav4-runner / .rav4-speed-light 用です。
+
+   画面中央のRUN-CAR隊列に見えているライトは、
+   .drive-car-slot::before と .drive-car-slot::after で作っています。
+   そのため、隊列側のライト高さはここで車種別に調整します。
+
+   top の数値を大きくするとライトは下がります。
+   top の数値を小さくするとライトは上がります。
+   ========================================================= */
+
+/* 1970年 グリーンカローラ：ライトを少し下げる */
+.car-slot-1970::before,
+.car-slot-1970::after{
+  top:calc(48% + 10px) !important;
+}
+
+/* 2010年 青いハリヤー hayy：v4では下がりすぎたため、+24px → +12px に戻す */
+.car-slot-2010::before,
+.car-slot-2010::after{
+  top:calc(48% + 12px) !important;
 }

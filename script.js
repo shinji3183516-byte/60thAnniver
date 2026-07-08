@@ -48,6 +48,13 @@ let activeDriveBackgroundLayer = 0;
 // 年代別に年表の上を走る車画像
 // 1960年代: corolla-60th / 1970年代: corolla-green / 1980年代: levin
 // 1990年代: prius / 2000年代: iQ / 2010年代: hayy / 2020年代: rav4-silver
+//
+// 【調整ポイント】
+// width    : 車画像の大きさ
+// top      : 車全体の走行高さ。数字を大きくすると車が下がります。
+// lightTop : ヘッドライトだけの高さ。車の top とは別に調整できます。
+//            %の数字を大きくするとライトが下がり、小さくすると上がります。
+//            Levinは画像の形状が他車と違うため、専用に大きめの値にしています。
 const ERA_RUNNER_CARS = [
   {
     from: 1960,
@@ -55,7 +62,8 @@ const ERA_RUNNER_CARS = [
     src: "images/run-cars/corolla-60th.png",
     alt: "Corolla 60th",
     width: "clamp(210px, 20vw, 340px)",
-    top: "22px"
+    top: "22px",
+    lightTop: "48%"
   },
   {
     from: 1970,
@@ -63,7 +71,10 @@ const ERA_RUNNER_CARS = [
     src: "images/run-cars/corolla-green.png",
     alt: "Classic Corolla",
     width: "clamp(210px, 20vw, 340px)",
-    top: "24px"
+    top: "24px",
+    // 1970年カローラ：前回より少し下げ、ライトを車体前端の高さに合わせます。
+    // 微調整：高い場合は +18px、低い場合は +10px に戻してください。
+    lightTop: "calc(48% + 15px)"
   },
   {
     from: 1980,
@@ -71,7 +82,8 @@ const ERA_RUNNER_CARS = [
     src: "images/run-cars/levin.png",
     alt: "Levin",
     width: "clamp(210px, 20vw, 340px)",
-    top: "28px"
+    top: "28px",
+    lightTop: "64%"
   },
   {
     from: 1990,
@@ -79,7 +91,8 @@ const ERA_RUNNER_CARS = [
     src: "images/run-cars/prius.png",
     alt: "Prius",
     width: "clamp(210px, 20vw, 340px)",
-    top: "26px"
+    top: "26px",
+    lightTop: "48%"
   },
   {
     from: 2000,
@@ -87,7 +100,8 @@ const ERA_RUNNER_CARS = [
     src: "images/run-cars/iQ.png",
     alt: "iQ",
     width: "clamp(90px, 8.5vw, 145px)",
-    top: "34px"
+    top: "34px",
+    lightTop: "48%"
   },
   {
     from: 2010,
@@ -95,7 +109,10 @@ const ERA_RUNNER_CARS = [
     src: "images/run-cars/hayy.png",
     alt: "Harrier 60th",
     width: "clamp(190px, 17vw, 290px)",
-    top: "24px"
+    top: "24px",
+    // hayy：SUVボディでライトが高く見えやすいため、前回よりさらに下げます。
+    // 微調整：まだ高い場合は +25px、低い場合は +18px にしてください。
+    lightTop: "calc(48% + 22px)"
   },
   {
     from: 2020,
@@ -103,7 +120,8 @@ const ERA_RUNNER_CARS = [
     src: "images/run-cars/rav4-silver.png",
     alt: "RAV4 Silver",
     width: "clamp(190px, 17vw, 290px)",
-    top: "24px"
+    top: "24px",
+    lightTop: "48%"
   }
 ];
 
@@ -1501,6 +1519,12 @@ function createRav4Runner() {
     runner.style.setProperty("--rav4-top", initialCar.top);
   }
 
+  // ライトの高さは車の高さとは別管理にします。
+  // これにより、Levinのように画像形状が違う車でもライト位置だけ単独調整できます。
+  if (initialCar && initialCar.lightTop) {
+    runner.style.setProperty("--runner-light-top", initialCar.lightTop);
+  }
+
   runner.appendChild(light);
   runner.appendChild(car);
   timelineFrame.appendChild(runner);
@@ -1527,6 +1551,10 @@ function runRav4Once() {
 
     // 車画像ごとの透明余白・トリミング差を補正し、毎回同じ高さを走らせます。
     runner.style.setProperty("--rav4-top", selectedCar.top || "24px");
+
+    // ヘッドライトだけの高さを単独で反映します。
+    // selectedCar.lightTop がない車は、従来どおり 48% を使います。
+    runner.style.setProperty("--runner-light-top", selectedCar.lightTop || "48%");
   }
 
   // 同じアニメーションを確実に再スタートさせます。
