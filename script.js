@@ -1295,10 +1295,12 @@ function updateSelectedByCenter() {
 
   const newIndex = Number(nearestNode.dataset.index);
   if (newIndex !== activeIndex) {
+    
     const previousIndex = activeIndex;
     activeIndex = newIndex;
     showData(activeIndex);
-
+   //中央線で年表停止したタイミングでrun-carを走らせる
+    runRav4Once();
     const isLoopReset =
       previousIndex === timelineData.length - 1 && newIndex === 0;
 
@@ -1689,7 +1691,7 @@ requestAnimationFrame(function() {
   createRav4Runner();
   updatePlayButtons();
   animate();
-  scheduleRav4Run();
+  //scheduleRav4Run();
 });
 
 
